@@ -6,11 +6,12 @@ const port = 3000
 
 app.use(logger)
 
+app.use(express.json());
+app.use(express.urlencoded({extended: false}));
+
 app.use(express.static('./public'))
-app.get('/api/members', (req, res) => res.json({code: 200}))
-app.get('/api/members/:id', (req, res) => {
-    res.send()
-})
+
+app.use('/api/members',require('./routes/api/member'))
 
 app.get('/', (req, res) => {
     res.send('Hello World!')
