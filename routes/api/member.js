@@ -1,7 +1,9 @@
 const express = require('express');
 const uuid = require('uuid')
 const router = express.Router();
-router.get('/', (req, res) => res.json({code: 200}))
+const {getMemberList} = require('../../controllers/MemberController')
+
+router.get('/', getMemberList)
 router.get('/:id', (req, res) => {
     res.json({ id: req.params.id })
 })

@@ -1,5 +1,6 @@
 const express = require('express')
 const connectDB = require('./db/connect')
+require('dotenv').config()
 const logger = require('./middleware/logger')
 const authorize = require('./middleware/authorize')
 const app = express()
@@ -14,6 +15,7 @@ app.use(express.urlencoded({extended: false})); //  to parse urlencoded request 
 app.use(express.static('./public'))
 
 app.use('/api/members',require('./routes/api/member'))
+app.use('/api/tasks',require('./routes/api/task'))
 
 app.get('/', (req, res) => {
     res.send('Hello World!')
@@ -21,12 +23,12 @@ app.get('/', (req, res) => {
 
 const start = async ()=>{
     try{
-        await connectDB();
+        await connectDB(process.env.MONGO_URI);
         app.listen(port, () => {
             console.log(`Express app listening at http://localhost:${port}`)
         })
     }catch (error){
-        console.log(error);
+        console.log("Error starting app",error);
     }
 }
 
