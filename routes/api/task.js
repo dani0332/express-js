@@ -4,11 +4,8 @@ const router = express.Router();
 const {getTaskList,createTask,getTask,updateTask, deleteTask} = require('../../controllers/TaskController')
 
 router.get('/', getTaskList)
-router.get('/:id', getTask)
-router.patch('/:id', updateTask)
-router.delete('/:id', deleteTask)
-
 router.post('/',createTask)
+router.route('/:id').get(getTask).patch(updateTask).delete(deleteTask)
 
 // router.post('/',(req, res) => {
 //     res.send(req.body)
