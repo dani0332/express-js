@@ -1,14 +1,12 @@
 const express = require('express');
-const jwt = require('jsonwebtoken');
-const authMiddleware = require('../../middleware/authenticationMiddleware')
+
 const uuid = require('uuid')
 const router = express.Router();
-const {getTaskList,createTask,getTask,updateTask, deleteTask} = require('../../controllers/TaskController')
+const {login} = require('../../controllers/AuthenticateController')
 
-router.get('/', authMiddleware ,getTaskList)
-router.post('/',createTask)
-router.route('/:id').get(getTask).patch(updateTask).delete(deleteTask)
-
+// router.get('/', getTaskList)
+router.post('/login',login)
+// router.route('/:id').get(getTask).patch(updateTask).delete(deleteTask)
 
 // router.post('/',(req, res) => {
 //     res.send(req.body)

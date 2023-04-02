@@ -1,18 +1,22 @@
 const Task = require('../models/Task')
+const jwt = require('jsonwebtoken');
 const asyncWrapper = require('../middleware/async')
-require('express-async-errors');
-const {BadRequestError} = require('../errors')
-const getTaskList =  async (req, res) => {
-    // throw new Error("testing async error")
+const {createCustomError} = require('../errors/custom-error')
+const login =  asyncWrapper(async (req, res) => {
     try {
-        console.log('getTaskList',req.user)
+        const {username: name
+        ,password: password } = req.body;
+        console.log("Login", name)
 
-        const tasks = await Task.find({})
-        res.status(200).json({tasks})
+        const id = new Date().getDate();
+
+        const token = jwt.sign({id,name},process.env.JWT_SECRET,{expiresIn: '30d' });
+
+        res.status(200).json({msg:'User Created' , token})
     } catch (error) {
         res.status(500).json({message: error})
     }
-}
+})
 
 const createTask =  asyncWrapper( async (req, res) => {
 
@@ -21,17 +25,17 @@ const createTask =  asyncWrapper( async (req, res) => {
     res.status(201).json({task})
 })
 
-const getTask = async (req, res,next) => {
+const getTask = asyncWrapper(async (req, res,next) => {
 
     const {id: taskId} = req.params
     const task = await Task.findOne({_id: taskId})
     if (!task) {
-        console.log('getTask')
-        throw new BadRequestError(`No Task with Id: ${taskId}`)
+        console.log('TaskController')
+        return next(createCustomError(`No Task with Id: ${taskId}`, 404))
     }
     res.status(200).json({task})
 
-}
+})
 
 const updateTask = asyncWrapper( async (req,res)=>{
     try {
@@ -68,4 +72,4 @@ const deleteTask = asyncWrapper( async (req,res) =>{
 
 })
 
-module.exports = {getTaskList,createTask,getTask,updateTask,deleteTask}
+module.exports = {login}
